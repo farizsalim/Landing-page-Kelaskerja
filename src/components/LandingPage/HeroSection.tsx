@@ -264,7 +264,7 @@ const HeroSection = ({whatsappLink}: HeroSectionProps) => {
             initial={{opacity: 0, x: 40}}
             animate={{opacity: 1, x: 0}}
             transition={{duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1]}}
-            className="relative z-0 mx-auto w-full min-w-0 max-w-105 lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-[48vw] lg:max-w-none"
+            className="relative z-0 mx-auto w-full min-w-0 max-w-105 lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-[min(42vw,36rem)] lg:max-w-none"
           >
             <div
               className="relative h-[min(74vw,18rem)] min-h-60 overflow-hidden sm:h-96 sm:min-h-0 lg:h-full"
