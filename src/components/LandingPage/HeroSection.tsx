@@ -197,7 +197,8 @@ const HeroSection = ({whatsappLink}: HeroSectionProps) => {
                 transition={{duration: 0.6, delay: 0.5, ease: [0.22, 1, 0.36, 1]}}
                 className="mt-4 max-w-md text-sm leading-relaxed text-white/65 sm:mt-6 sm:max-w-xl sm:text-lg">
                 Bootcamp praktis untuk kamu yang ingin membangun skill, portfolio,
-                dan percaya diri untuk melangkah ke karier baru.
+                dan percaya diri untuk melangkah ke karier baru. Belum tahu mulai
+                dari mana? Ikuti quiz singkat untuk mendapat rekomendasi kelas.
               </motion.p>
 
               {/* CTA buttons */}
@@ -214,7 +215,7 @@ const HeroSection = ({whatsappLink}: HeroSectionProps) => {
                   type="button"
                   onClick={() => setIsQuizOpen(true)}
                   className="group inline-flex min-w-0 w-full items-center justify-center rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-[#1e2024] transition hover:-translate-y-0.5 hover:bg-brand-500 hover:shadow-lg hover:shadow-brand-600/30 sm:w-auto sm:px-7 sm:py-3.5 sm:text-base">
-                  Coba Konsultasi Gratis{" "}
+                  Ikuti Quiz Gratis{" "}
                   <ArrowRight
                     className="ml-2 transition-transform group-hover:translate-x-1"
                     size={18}
@@ -229,6 +230,10 @@ const HeroSection = ({whatsappLink}: HeroSectionProps) => {
                   Daftar Sekarang
                 </Link>
               </motion.div>
+
+              <p className="mt-3 text-center text-xs text-white/45 sm:text-left">
+                Rekomendasi bootcamp dan konsultasi gratis sesuai kebutuhanmu.
+              </p>
 
               {/* Proof points */}
               <motion.div
