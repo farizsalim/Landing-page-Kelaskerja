@@ -1,0 +1,8 @@
+<svg width="240" height="120" viewBox="0 0 240 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="240" height="120" rx="20" fill="#F8FAFC"/>
+  <path d="M40 65Q50 45 60 65Q70 85 80 65" stroke="#00D9FF" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M55 55Q65 35 75 55Q85 75 95 55" stroke="#FF1493" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M70 70Q80 50 90 70Q100 90 110 70" stroke="#FFA500" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="130" y="50" font-size="13" font-weight="bold" fill="#1E293B" font-family="Arial">SEBISA</text>
+  <text x="130" y="68" font-size="10" fill="#64748B" font-family="Arial">PROJECT</text>
+</svg>
