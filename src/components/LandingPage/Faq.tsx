@@ -114,7 +114,10 @@ const Faq = ({whatsappLink}: FaqProps) => {
                     {group.label}
                   </h3>
                 </FadeInUp>
-                <StaggerContainer className="space-y-4">
+                <StaggerContainer
+                  key={`${group.key}-${showAllFaqs ? "all" : "featured"}`}
+                  className="space-y-4"
+                >
                   {groupFaqs.map((faq, index) => {
                     // Use a globally unique index for accordion state
                     const globalIndex = faqs.findIndex((f) => f.id === faq.id);
