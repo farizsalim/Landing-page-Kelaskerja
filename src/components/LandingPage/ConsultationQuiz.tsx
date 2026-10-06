@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, RotateCcw, Sparkles } from "lucide-react";
 import {FaWhatsapp} from "react-icons/fa";
@@ -27,12 +27,14 @@ const ConsultationQuiz = ({ isOpen, onClose, whatsappLink }: ConsultationQuizPro
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<QuizCategory[]>([]);
   const [direction, setDirection] = useState(1);
+  const isAnswering = useRef(false);
 
   const reset = useCallback(() => {
     setStep("welcome");
     setCurrentQuestion(0);
     setAnswers([]);
     setDirection(1);
+    isAnswering.current = false;
   }, []);
 
   const handleClose = useCallback(() => {
@@ -47,6 +49,9 @@ const ConsultationQuiz = ({ isOpen, onClose, whatsappLink }: ConsultationQuizPro
 
   const handleAnswer = useCallback(
     (option: QuizOption) => {
+      if (isAnswering.current) return;
+      isAnswering.current = true;
+
       const newAnswers = [...answers];
       newAnswers[currentQuestion] = option.category;
       setAnswers(newAnswers);
@@ -54,11 +59,13 @@ const ConsultationQuiz = ({ isOpen, onClose, whatsappLink }: ConsultationQuizPro
 
       if (currentQuestion < TOTAL_QUESTIONS - 1) {
         setTimeout(() => {
-          setCurrentQuestion((prev) => prev + 1);
+          setCurrentQuestion((prev) => Math.min(prev + 1, TOTAL_QUESTIONS - 1));
+          isAnswering.current = false;
         }, 300);
       } else {
         setTimeout(() => {
           setStep("result");
+          isAnswering.current = false;
         }, 400);
       }
     },
@@ -152,7 +159,11 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
 
   if (!isOpen) return null;
 
-  const question = quizQuestions[currentQuestion];
+  const safeQuestionIndex = Math.max(
+    0,
+    Math.min(currentQuestion, TOTAL_QUESTIONS - 1)
+  );
+  const question = quizQuestions[safeQuestionIndex];
   const progress = ((currentQuestion + (step === "result" ? 1 : 0)) / TOTAL_QUESTIONS) * 100;
 
   return (
@@ -177,7 +188,7 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative z-10 w-full max-w-xl overflow-hidden rounded-3xl bg-white shadow-2xl"
+            className="relative z-10 max-h-[calc(100svh-1rem)] w-full max-w-xl overflow-y-auto overscroll-contain rounded-2xl bg-white shadow-2xl sm:max-h-[calc(100svh-3rem)] sm:rounded-3xl"
           >
             {/* Close button */}
             <button
@@ -200,7 +211,7 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
               </div>
             )}
 
-            <div className="px-6 py-8 sm:px-10 sm:py-10">
+            <div className="px-4 py-5 sm:px-10 sm:py-10">
               <AnimatePresence mode="wait" custom={direction}>
                 {/* ── Welcome Screen ── */}
                 {step === "welcome" && (
@@ -214,13 +225,13 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                     transition={{ duration: 0.3 }}
                     className="text-center"
                   >
-                    <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#FFF8E7]">
-                      <Sparkles size={36} className="text-[#FFB500]" />
+                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#FFF8E7] sm:mb-6 sm:h-20 sm:w-20">
+                      <Sparkles size={28} className="text-[#FFB500] sm:h-9 sm:w-9" />
                     </div>
-                    <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                    <h2 className="text-xl font-bold text-slate-900 sm:text-3xl">
                       Temukan Bootcamp Terbaik Untukmu!
                     </h2>
-                    <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-slate-500 sm:text-base">
+                    <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-slate-500 sm:mt-4 sm:text-base">
                       Jawab 10 pertanyaan singkat dan kami akan merekomendasikan
                       bootcamp yang paling sesuai dengan minat dan bakatmu.
                     </p>
@@ -229,7 +240,7 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                     </p>
                     <button
                       onClick={handleStart}
-                      className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#FFB500] px-8 py-3.5 text-sm font-bold text-[#1A1A1A] shadow-lg shadow-[#FFB500]/25 transition hover:bg-[#E5A200] hover:shadow-xl hover:shadow-[#FFB500]/30 hover:-translate-y-0.5 active:scale-95"
+                      className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#FFB500] px-7 py-3 text-sm font-bold text-[#1A1A1A] shadow-lg shadow-[#FFB500]/25 transition hover:bg-[#E5A200] hover:shadow-xl hover:shadow-[#FFB500]/30 hover:-translate-y-0.5 active:scale-95 sm:mt-8 sm:px-8 sm:py-3.5"
                     >
                       Mulai Quiz
                       <ChevronRight size={18} />
@@ -265,12 +276,12 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                     </div>
 
                     {/* Question */}
-                    <h3 className="mt-4 text-lg font-bold leading-snug text-slate-900 sm:text-xl">
+                    <h3 className="mt-3 text-base font-bold leading-snug text-slate-900 sm:mt-4 sm:text-xl">
                       {question.question}
                     </h3>
 
                     {/* Options */}
-                    <div className="mt-6 space-y-3">
+                    <div className="mt-4 space-y-2 sm:mt-6 sm:space-y-3">
                       {question.options.map((option, idx) => {
                         const isSelected = answers[currentQuestion] === option.category;
                         return (
@@ -280,14 +291,14 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.06 }}
                             onClick={() => handleAnswer(option)}
-                            className={`group flex w-full items-start gap-3 rounded-2xl border-2 p-4 text-left transition-all duration-200 ${
+                            className={`group flex w-full items-start gap-2.5 rounded-xl border-2 p-3 text-left transition-all duration-200 sm:gap-3 sm:rounded-2xl sm:p-4 ${
                               isSelected
                                 ? "border-[#FFB500] bg-[#FFF8E7] shadow-md"
                                 : "border-slate-200 bg-white hover:border-[#FFB500]/50 hover:bg-[#FFFDF5] hover:shadow-sm"
                             }`}
                           >
                             <span
-                              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold transition ${
+                                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold transition sm:h-7 sm:w-7 sm:text-xs ${
                                 isSelected
                                   ? "bg-[#FFB500] text-[#1A1A1A]"
                                   : "bg-slate-100 text-slate-500 group-hover:bg-[#FFB500]/20 group-hover:text-[#B37A00]"
@@ -296,7 +307,7 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                               {option.label}
                             </span>
                             <span
-                              className={`text-sm leading-relaxed transition ${
+                                className={`text-[13px] leading-snug transition sm:text-sm sm:leading-relaxed ${
                                 isSelected
                                   ? "font-semibold text-slate-900"
                                   : "text-slate-600 group-hover:text-slate-800"
@@ -332,7 +343,7 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ type: "spring", damping: 10, stiffness: 200, delay: 0.1 }}
-                            className="mx-auto mb-4 text-6xl"
+                            className="mx-auto mb-3 text-4xl sm:mb-4 sm:text-6xl"
                           >
                             {result.emoji}
                           </motion.div>
@@ -346,7 +357,7 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                             <p className="text-sm font-semibold uppercase tracking-widest text-[#FFB500]">
                               {result.subtitle}
                             </p>
-                            <h2 className="mt-2 text-3xl font-bold text-slate-900">
+                            <h2 className="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl">
                               {result.title}
                             </h2>
                           </motion.div>
@@ -356,7 +367,7 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                             initial={{ opacity: 0, y: 16 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-slate-500"
+                            className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-500 sm:mt-4"
                           >
                             {result.description}
                           </motion.p>
@@ -366,7 +377,7 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                             initial={{ opacity: 0, y: 16 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4 }}
-                            className="mx-auto mt-6 max-w-xs rounded-2xl bg-[#222222] p-4 text-white"
+                            className="mx-auto mt-4 max-w-xs rounded-2xl bg-[#222222] p-3.5 text-white sm:mt-6 sm:p-4"
                           >
                             <p className="text-xs font-semibold uppercase tracking-wider text-[#FFB500]">
                               Bootcamp Rekomendasi
@@ -381,9 +392,9 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                             initial={{ opacity: 0, y: 16 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.5 }}
-                            className="mx-auto mt-6 max-w-sm"
+                            className="mx-auto mt-4 max-w-sm sm:mt-6"
                           >
-                            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400 sm:mb-3 sm:text-xs">
                               Detail Skor
                             </p>
                             <div className="space-y-2">
@@ -392,11 +403,11 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                               )
                                 .sort((a, b) => b[1] - a[1])
                                 .map(([cat, score]) => (
-                                  <div key={cat} className="flex items-center gap-3">
-                                    <span className="w-32 text-right text-xs text-slate-500 sm:w-40">
+                                  <div key={cat} className="flex items-center gap-2 sm:gap-3">
+                                    <span className="w-24 text-right text-[10px] leading-tight text-slate-500 sm:w-40 sm:text-xs">
                                       {categoryLabels[cat]}
                                     </span>
-                                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-100">
+                                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100 sm:h-2.5">
                                       <motion.div
                                         className={`h-full rounded-full ${
                                           cat === result.category
@@ -414,7 +425,7 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                                         }}
                                       />
                                     </div>
-                                    <span className="w-8 text-left text-xs font-bold text-slate-700">
+                                    <span className="w-6 text-left text-xs font-bold text-slate-700 sm:w-8">
                                       {score}
                                     </span>
                                   </div>
@@ -427,13 +438,13 @@ Saya tertarik untuk konsultasi lebih lanjut tentang bootcamp ini. Terima kasih!`
                             initial={{ opacity: 0, y: 16 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.7 }}
-                            className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center"
+                            className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:justify-center sm:gap-3"
                           >
                             <a
                               href={generateWhatsAppLink()}
                               target="_blank"
                               rel="noreferrer"
-                              className="inline-flex items-center justify-center gap-2 rounded-full bg-green-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-green-600/25 transition hover:bg-green-700 hover:shadow-xl hover:-translate-y-0.5"
+                              className="inline-flex items-center justify-center gap-2 rounded-full bg-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-green-600/25 transition hover:bg-green-700 hover:shadow-xl hover:-translate-y-0.5 sm:px-6"
                             >
                               <FaWhatsapp size={18} />
                               Konsultasi via WhatsApp
