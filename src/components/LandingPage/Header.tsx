@@ -14,9 +14,10 @@ type HeaderProps = {
   scrolled: boolean;
   whatsappLink: string;
   position?: "sticky" | "absolute";
+  mobileOnly?: boolean;
 };
 
-const Header = ({scrolled, whatsappLink, position = "sticky"}: HeaderProps) => {
+const Header = ({scrolled, whatsappLink, position = "sticky", mobileOnly = false}: HeaderProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const pathname = usePathname();
@@ -33,18 +34,18 @@ const Header = ({scrolled, whatsappLink, position = "sticky"}: HeaderProps) => {
         initial={{y: -40, opacity: 0}}
         animate={{y: 0, opacity: 1}}
         transition={{duration: 0.6, ease: [0.22, 1, 0.36, 1]}}
-        className={`${position === "sticky" ? "sticky" : "absolute w-full"} top-0 z-50 border-b border-slate-200/80 bg-white transition-shadow ${scrolled ? "shadow-sm md:bg-white/95 md:backdrop-blur" : ""}`}>
-        <nav className="mx-auto flex min-h-20 max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
+        className={`${mobileOnly ? "mx-auto max-w-[430px]" : ""} ${position === "sticky" ? "sticky" : "absolute w-full"} top-0 z-50 border-b border-slate-200/80 bg-white transition-shadow ${scrolled ? "shadow-sm md:bg-white/95 md:backdrop-blur" : ""}`}>
+        <nav className={`mx-auto flex min-h-20 items-center justify-between px-4 py-2 sm:px-6 lg:px-8 ${mobileOnly ? "max-w-[430px]" : "max-w-7xl"}`}>
           <Link href="/" className="flex shrink-0 items-center">
             <Image
               src="/Logo-Nav-transparent.png"
               alt="KelasKerja Logo"
               width={200}
               height={100}
-              className="h-14 w-auto origin-left object-contain object-left scale-[2.8] md:h-20 md:scale-[3.3]"
+              className={`${mobileOnly ? "h-14 scale-[2.8]" : "h-14 md:h-20 md:scale-[3.3]"} w-auto origin-left object-contain object-left`}
             />
           </Link>
-          <div className="hidden items-center gap-6 text-sm font-medium text-slate-700 md:flex">
+          <div className={`${mobileOnly ? "hidden" : "hidden md:flex"} items-center gap-6 text-sm font-medium text-slate-700`}>
             {navItems.map((item) => (
               <Link
                 key={item.label}
@@ -59,7 +60,7 @@ const Header = ({scrolled, whatsappLink, position = "sticky"}: HeaderProps) => {
               Contact
             </Link>
           </div>
-          <div className="hidden items-center gap-3 md:flex">
+          <div className={`${mobileOnly ? "hidden" : "hidden md:flex"} items-center gap-3`}>
             <button
               onClick={() => setIsQuizOpen(true)}
               className="inline-flex items-center gap-2 rounded-full border-2 border-[#FFB500] px-4 py-2 text-sm font-semibold text-[#B37A00] transition hover:bg-[#FFF8E7] hover:shadow-sm">
@@ -79,7 +80,7 @@ const Header = ({scrolled, whatsappLink, position = "sticky"}: HeaderProps) => {
             aria-label="Buka menu navigasi"
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
-            className="rounded-full border border-slate-200 p-2 text-slate-700 md:hidden"
+            className={`${mobileOnly ? "" : "md:hidden"} rounded-full border border-slate-200 p-2 text-slate-700`}
             onClick={() => setMenuOpen((prev) => !prev)}>
             {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -92,7 +93,7 @@ const Header = ({scrolled, whatsappLink, position = "sticky"}: HeaderProps) => {
               exit={{height: 0, opacity: 0}}
               transition={{duration: 0.3, ease: [0.22, 1, 0.36, 1]}}
                 id="mobile-navigation"
-                className="overflow-hidden border-t border-slate-200 bg-white shadow-sm md:hidden">
+                className={`overflow-hidden border-t border-slate-200 bg-white shadow-sm ${mobileOnly ? "" : "md:hidden"}`}>
               <div className="flex flex-col px-2 py-4 text-sm font-medium text-slate-700">
                 <Link href={isHome ? "#bootcamp" : "/#bootcamp"} onClick={() => setMenuOpen(false)} className="block px-3 py-3 rounded-md transition hover:bg-slate-50">
                   Bootcamp
