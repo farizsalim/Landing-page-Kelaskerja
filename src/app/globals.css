@@ -37,6 +37,12 @@ body {
   color: #3f4247;
 }
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 .section-light {
   background: #ffffff;
 }
