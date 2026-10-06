@@ -36,13 +36,16 @@ const Header = ({scrolled, whatsappLink, position = "sticky", mobileOnly = false
         transition={{duration: 0.6, ease: [0.22, 1, 0.36, 1]}}
         className={`${mobileOnly ? "mx-auto max-w-[430px]" : ""} ${position === "sticky" ? "sticky" : "absolute w-full"} top-0 z-50 border-b border-slate-200/80 bg-white transition-shadow ${scrolled ? "shadow-sm md:bg-white/95 md:backdrop-blur" : ""}`}>
         <nav className={`mx-auto flex min-h-20 items-center justify-between px-4 ${mobileOnly ? "max-w-[430px] py-0" : "max-w-7xl py-2 sm:px-6 lg:px-8"}`}>
-          <Link href="/" className="flex shrink-0 items-center">
+          <Link
+            href="/"
+            className={`${mobileOnly ? "h-16 w-56" : "h-14 w-52"} relative shrink-0 overflow-hidden`}
+          >
             <Image
-              src="/footer/Logo-Nav-new.png"
+              src="/Logo-Nav-transparent.png"
               alt="KelasKerja Logo"
-              width={1024}
-              height={363}
-              className={`${mobileOnly ? "h-16 scale-[1.1]" : "h-14 md:h-20 md:scale-[1.2]"} w-auto origin-left object-contain object-left`}
+              width={1280}
+              height={1280}
+              className="absolute left-1/2 top-1/2 h-60 w-60 max-w-none -translate-x-1/2 -translate-y-1/2 object-contain"
             />
           </Link>
           <div className={`${mobileOnly ? "hidden" : "hidden md:flex"} items-center gap-6 text-sm font-medium text-slate-700`}>
